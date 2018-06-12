@@ -7,7 +7,7 @@ from openpyxl import load_workbook
 from sklearn.neighbors import LocalOutlierFactor
 
 #open workbook
-wb = load_workbook('genes.xlsx')
+wb = load_workbook('normalized.xlsx')
 ws = wb['Sheet1']
 
 #initialize and fill matrix
@@ -16,16 +16,29 @@ for i in range(2,5):
     for j in range(2,3585):
         d[j-2][i-2] = ws.cell(row=j,column=i).value
 
-##clf = LocalOutlierFactor(n_neighbors=20)
-##y_pred = clf.fit_predict(d)
-##iterator = 0
-##while (i<len(y_pred)):
-##    if y_pred[i] == -1:
-##        d = np.delete(d, (i), axis = 0)
-##        y_pred = np.delete(y_pred, (i), axis = 0)
-##        i-=1
-##    i+=1
+iterator = 0
+while (i<len(d)):
+    for j in range (0,3):
+        if d[i][j] == 0:
+            d = np.delete(d, (i), axis = 0)
+            i-=1
+            break
+    i+=1
 
+print(len(d))
+
+clf = LocalOutlierFactor(n_neighbors=20)
+y_pred = clf.fit_predict(d)
+    
+k = 0
+while (k<len(y_pred)):
+    if y_pred[k] == -1:
+        d = np.delete(d, (k), axis = 0)
+        y_pred = np.delete(y_pred, (k), axis = 0)
+        k-=1
+    k+=1
+
+print(len(d))
 #plot initial data
 plt.rcParams['figure.figsize'] = (16, 9)
 fig = plt.figure()

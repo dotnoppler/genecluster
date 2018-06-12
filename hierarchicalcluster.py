@@ -9,24 +9,37 @@ from sklearn.neighbors import LocalOutlierFactor
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 
 plt.rcParams['figure.figsize'] = (16, 9)
-dataused = 13
+dataused = 3
 clusters = 7
 
 #load  workbook
-wb = load_workbook('genes.xlsx')
+wb = load_workbook('normalized.xlsx')
 ws = wb['Sheet1']
 
 #fill data matrix
-d = np.zeros((3583,dataused))
-for i in range(2,2+dataused):
+d = np.zeros((3583,3))
+for i in range(2,5):
     for j in range(2,3585):
         d[j-2][i-2] = ws.cell(row=j,column=i).value
+
 
 #fill parallel names list
 names = []
 for i in range(2,3585):
     names.append(ws.cell(row = i, column = 1).value)
-    
+
+k = 0
+while (k<len(d)):
+    for j in range (0,3):
+        if d[k][j] == 0:
+            d = np.delete(d, (k), axis = 0)
+            names.pop(k)
+            k-=1
+            break
+    k+=1
+print(len(d))
+print(len(names))
+
 Z = linkage(d, 'ward')
 
 

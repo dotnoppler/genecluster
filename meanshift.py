@@ -44,23 +44,21 @@ bandwidth = estimate_bandwidth(d, quantile=0.2, n_samples=500)
 ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
 ms.fit(d)
 labels = ms.labels_
-cluster_centers = ms.cluster_centers_
+C = ms.cluster_centers_
 labels_unique = np.unique(labels)
 n_clusters_ = len(labels_unique)
 print("number of estimated clusters : %d" % n_clusters_)
 
-plt.figure(1)
-plt.clf()
+#plot clusters
+plt.rcParams['figure.figsize'] = (16, 9)
+fig = plt.figure()
+ax = Axes3D(fig)
+ax.scatter(d[:, 0], d[:, 1], d[:, 2])
+ax.scatter(C[:, 0], C[:, 1], C[:, 2], marker='*', c='#050505', s=500)
+fig = plt.show()
 
-colors = cycle('bgrcmykbgrcmykbgrcmykbgrcmyk')
-for k, col in zip(range(n_clusters_), colors):
-    my_members = labels == k
-    cluster_center = cluster_centers[k]
-    plt.plot(d[my_members, 0], d[my_members, 1], col + '.')
-    plt.plot(cluster_center[0], cluster_center[1], 'o', markerfacecolor=col,
-             markeredgecolor='k', markersize=14)
-plt.title('Estimated number of clusters: %d' % n_clusters_)
-plt.show()
+
+
 
     
 
